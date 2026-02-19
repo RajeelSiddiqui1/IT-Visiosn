@@ -46,7 +46,7 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://qs93k5gj-5173.inc1.devtunnels.ms',
+  'https://d9666bbk-5173.asse.devtunnels.ms/',
 ];
 
 const io = new Server(server, {
