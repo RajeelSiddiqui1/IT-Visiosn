@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  backend-app:
+    build: ./backend
+    container_name: backend-app
+    command: ["node", "index.js"]
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+
+  inngest-worker:
+    build: ./backend
+    container_name: inngest-worker
+    command: ["node", "inngest.js"]
+    ports:
+      - "8288:8288"
+    env_file:
+      - .env
+    depends_on:
+      - backend-app
