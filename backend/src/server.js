@@ -46,9 +46,15 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://d9666bbk-5173.asse.devtunnels.ms/',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://localhost:5176',
+  'https://d9666bbk-5173.asse.devtunnels.ms',
   'http://153.92.209.177:5001',
-];
+  'http://153.92.209.177:5173',
+  'http://153.92.209.177:5178',
+  process.env.FRONTEND_URL
+].filter(Boolean);
 
 const io = new Server(server, {
   cors: {
@@ -128,15 +134,18 @@ io.on('connection', (socket) => {
 
 setSocketIOInstance(io);
 
+
+
 // Middleware
 const __dirname = path.resolve();
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || origin.startsWith('http://153.92.209.177') || origin.startsWith('http://localhost')) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        console.warn(`⚠️ CORS blocked origin: ${origin}`);
+        callback(null, false); // Pass false instead of throwing a noisy error
       }
     },
     credentials: true,
