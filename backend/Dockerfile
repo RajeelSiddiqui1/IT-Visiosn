@@ -1,16 +1,23 @@
-FROM node:20-bookworm
+FROM node:20
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+RUN apt-get update && apt-get install -y \
+    python3 \
+    build-essential \
+    libcairo2-dev \
+    libjpeg-dev \
+    libpango1.0-dev \
+    libgif-dev \
+    librsvg2-dev
 
-RUN npm ci --only=production
+COPY package*.json ./
+
+RUN npm install
 
 COPY . .
 
 EXPOSE 5000
+EXPOSE 8288
 
-ENV NODE_ENV=production
-ENV PORT=5000
-
-CMD ["node", "src/server.js"]
+CMD ["npm","run","dev"]
