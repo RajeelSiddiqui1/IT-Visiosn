@@ -21,21 +21,30 @@ export const protectRoute = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized - Invalid token" });
     }
 
-    const user = await User.findById(decoded.userId).select("-password");
+    let userContent = await User.findById(decoded.userId).select("-password");
 
-    if (!user) {
+    if (!userContent) {
       return res.status(401).json({ message: "Unauthorized - User not found" });
     }
 
+    // 🕒 Auto-clear expired subscriptions
+    if (userContent.subscription !== "free" && userContent.subscriptionExpiresAt && new Date(userContent.subscriptionExpiresAt) < new Date()) {
+      userContent.subscription = "free";
+      userContent.subscriptionExpiresAt = null;
+      userContent.subscriptionActivatedAt = null;
+      await userContent.save();
+      console.log(`📡 Subscription expired and cleared for user: ${userContent.email}`);
+    }
+
     // 🚨 Ban check
-    if (user.isBanned) {
+    if (userContent.isBanned) {
       res.clearCookie("jwt"); // Auto logout
       return res.status(403).json({
-        message: `Your account has been banned. Reason: ${user.banReason || "No reason provided"}`,
+        message: `Your account has been banned. Reason: ${userContent.banReason || "No reason provided"}`,
       });
     }
 
-    req.user = user;
+    req.user = userContent;
 
     next();
   } catch (error) {

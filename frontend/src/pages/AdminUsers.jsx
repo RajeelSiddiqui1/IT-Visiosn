@@ -221,7 +221,8 @@ const AdminUsers = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base-100 via-base-200/50 to-base-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 via-base-200/50 to-base-100 p-2 sm:p-4 lg:p-6 overflow-x-hidden">
+      <div className="max-w-[1600px] mx-auto">
       <Toaster 
         position="top-right"
         toastOptions={{
@@ -263,7 +264,7 @@ const AdminUsers = () => {
       </motion.div>
 
       {/* Enhanced Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 lg:gap-6 mb-8">
         <StatCard 
           title="Total Users" 
           value={stats.totalUsers} 
@@ -577,6 +578,7 @@ const AdminUsers = () => {
           </div>
         </motion.div>
       )}
+    </div>
     </div>
   )
 }
