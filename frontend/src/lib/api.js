@@ -3,16 +3,23 @@ import { axiosInstance } from "./axios"
 // Auth API functions
 export const signup = async (signupData) => {
   const response = await axiosInstance.post("/auth/signup", signupData)
+  if (response.data.token) {
+    localStorage.setItem("token", response.data.token)
+  }
   return response.data
 }
 
 export const login = async (loginData) => {
   const response = await axiosInstance.post("/auth/login", loginData)
+  if (response.data.token) {
+    localStorage.setItem("token", response.data.token)
+  }
   return response.data
 }
 
 export const logout = async () => {
   const response = await axiosInstance.post("/auth/logout")
+  localStorage.removeItem("token")
   return response.data
 }
 
@@ -41,10 +48,15 @@ export const addFace = (formData) =>
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 
-export const loginWithFace = (formData) =>
-  axiosInstance.post('/face-auth/login-with-face', formData, {
+export const loginWithFace = async (formData) => {
+  const response = await axiosInstance.post('/face-auth/login-with-face', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
+  if (response.data.token) {
+    localStorage.setItem("token", response.data.token)
+  }
+  return response;
+};
 
 export const sendOTP = async (phone) => {
   const response = await axiosInstance.post("/auth/send-otp", phone)

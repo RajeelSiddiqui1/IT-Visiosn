@@ -2,12 +2,11 @@
   import axios from "axios";
 
   const isDevTunnel = location.origin.includes(".devtunnels.ms");
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
   const BASE_URL = isDevTunnel
     ? "https://d9666bbk-5173.asse.devtunnels.ms/api"
-    : import.meta.env.MODE === "development"
-    ? "http://localhost:5000/api"
-    : "https://your-production-backend.com/api";
+    : `${backendUrl}/api`;
 
   export const axiosInstance = axios.create({
     baseURL: BASE_URL,
@@ -53,16 +52,15 @@
 //   },
 // )
 
-// axiosInstance.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response?.status === 401) {
-//       // Only redirect if not already on login page to prevent infinite loops
-//       if (!window.location.pathname.includes("/login")) {
-//         localStorage.removeItem("token")
-//         window.location.href = "/login"
-//       }
-//     }
-//     return Promise.reject(error)
-//   },
-// )
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      if (!window.location.pathname.includes("/login")) {
+        localStorage.removeItem("token")
+        window.location.href = "/login"
+      }
+    }
+    return Promise.reject(error)
+  },
+)

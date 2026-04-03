@@ -1,21 +1,16 @@
-FROM node:20-alpine
+FROM node:20-bookworm
 
 WORKDIR /app
 
-# Install build tools for node-gyp (canvas, sharp)
-RUN apk add --no-cache python3 make g++ libc6-compat
+COPY package.json package-lock.json ./
 
-# Copy package files
-COPY package*.json ./
+RUN npm ci --only=production
 
-# Install dependencies
-RUN npm install --production
-
-# Copy source code
 COPY . .
 
-# Expose backend + Inngest ports
-EXPOSE 5000 8288
+EXPOSE 5000
 
-# Default command (server.js in src folder)
+ENV NODE_ENV=production
+ENV PORT=5000
+
 CMD ["node", "src/server.js"]

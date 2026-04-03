@@ -130,7 +130,7 @@ export async function loginWithFace(req, res) {
     });
 
     const userData = await User.findById(bestMatch._id).select("-password");
-    res.json({ success: true, user: userData });
+    res.json({ success: true, user: userData, token });
   } catch (err) {
     console.error("Login With Face Error:", err);
     res.status(500).json({ success: false, message: "Internal Server Error", error: err.message });

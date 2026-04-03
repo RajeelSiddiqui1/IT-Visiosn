@@ -5,7 +5,12 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { io } from "socket.io-client"
 import { startInterview, endInterview, submitAnswer, getInterviewResults } from "../lib/api"
 
-const SOCKET_URL = "http://localhost:5000"
+const isDevTunnel = typeof window !== "undefined" && window.location.origin.includes(".devtunnels.ms");
+const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
+const SOCKET_URL = isDevTunnel
+  ? "https://d9666bbk-5173.asse.devtunnels.ms"
+  : backendUrl;
 
 const useInterviewSession = (interviewId, userId) => {
   const [socket, setSocket] = useState(null)
